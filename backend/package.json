@@ -17,6 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "@fastify/autoload": "^5.0.0",
+    "@fastify/multipart": "^7.4.0",
     "@fastify/sensible": "^5.0.0",
     "dotenv": "^16.0.3",
     "fastify": "^4.11.0",
@@ -25,6 +26,7 @@
     "fastify-plugin": "^4.0.0",
     "fp-ts": "^2.13.1",
     "fp-ts-std": "^0.15.1",
+    "fp-ts-stream": "^0.1.10",
     "io-ts": "^2.2.20",
     "minio": "^7.0.32",
     "newtype-ts": "^0.3.5",

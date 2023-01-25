@@ -31,3 +31,13 @@ export const internalServiceErrorOf: (msg: ErrorMessage) => InternalServiceError
   _tag: 'InternalServiceError',
   msg,
 })
+
+export type MinioError = {
+  _tag: 'MinioError'
+  msg: ErrorMessage
+}
+
+export const minioErrorOf: (msg: ErrorMessage) => MinioError = (msg) => ({
+  _tag: 'MinioError',
+  msg,
+})

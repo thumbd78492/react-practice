@@ -1,11 +1,18 @@
 import * as E from 'fp-ts/Either'
-import { UnauthorizedUser, UserInfo, AuthorizedUser, ALL_AUTHORIZED_ACCOUNT_TUPLE } from './user'
-import { identity, pipe } from 'fp-ts/function'
+import * as EM from './errorMessage'
+import { UnauthorizedUser, UserInfo, AuthorizedUser, ALL_AUTHORIZED_ACCOUNT_TUPLE, UserCodec } from './user'
+import { identity, pipe, flow } from 'fp-ts/function'
 
-export const userOf: (userInfo: UserInfo) => E.Either<UnauthorizedUser, AuthorizedUser> = (userInfo) =>
+export const userDecoder: (userInfo: unknown) => E.Either<EM.ErrorMessage, E.Either<UnauthorizedUser, AuthorizedUser>> = (userInfo) =>
   pipe(
     userInfo,
-    E.fromPredicate((user) => user.account in ALL_AUTHORIZED_ACCOUNT_TUPLE, identity),
-    E.mapLeft((unauth) => ({ ...unauth, _tag: 'Unauthorized' as const })),
-    E.map((auth) => ({ ...auth, _tag: 'Authorized' as const }))
+    UserCodec.decode,
+    E.mapLeft((_) => EM.errorMessageOf(`user payload received from keycloak is invalid`)),
+    E.map(
+      flow(
+        E.fromPredicate((user: UserInfo) => user.account in ALL_AUTHORIZED_ACCOUNT_TUPLE, identity),
+        E.mapLeft((unauth) => ({ ...unauth, _tag: 'Unauthorized' as const })),
+        E.map((auth) => ({ ...auth, _tag: 'Authorized' as const }))
+      )
+    )
   )
